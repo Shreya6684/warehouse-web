@@ -1,0 +1,946 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#8B5CF6">
+  <meta name="description" content="WarehousePro inventory and warehouse management dashboard">
+  <title>WarehousePro | Warehouse Management</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- ================= LOGIN / REGISTER ================= -->
+  <section id="authScreen" class="auth-screen">
+    <div class="auth-card">
+      <div class="auth-logo">W</div>
+      <h1>Warehouse<span>Pro</span></h1>
+      <p class="auth-subtitle">Smart warehouse management system</p>
+
+      <div class="auth-tabs">
+        <button type="button" id="loginTab" class="auth-tab active">Login</button>
+        <button type="button" id="registerTab" class="auth-tab">Register</button>
+      </div>
+
+      <form id="authForm">
+        <label for="authName" id="nameLabel" hidden>Full Name</label>
+        <input id="authName" type="text" placeholder="Enter your full name"
+          autocomplete="name" hidden>
+
+        <label for="authEmail">Email Address</label>
+        <input id="authEmail" type="email" placeholder="Enter your email"
+          autocomplete="email" required>
+
+        <label for="authPassword">Password</label>
+        <input id="authPassword" type="password" placeholder="Enter your password"
+          minlength="8" autocomplete="current-password" required>
+
+        <button type="submit" id="authSubmit" class="auth-submit">
+          Login to Dashboard
+        </button>
+
+        <p id="authMessage" class="auth-message" aria-live="polite"></p>
+      </form>
+
+      <p class="auth-note">WarehousePro · Warehouse Management Dashboard</p>
+    </div>
+  </section>
+
+  <!-- ================= APPLICATION ================= -->
+  <div class="app-shell">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#dashboard">
+        <span class="brand-logo">W</span>
+        <span class="brand-text">Warehouse<span>Pro</span></span>
+      </a>
+
+      <div class="workspace">
+        <div class="workspace-icon">W</div>
+        <div class="workspace-info">
+          <strong>Main Warehouse</strong>
+          <small>Warehouse workspace</small>
+        </div>
+        <span class="workspace-arrow">⌄</span>
+      </div>
+
+      <p class="nav-label">WORKSPACE</p>
+
+      <nav class="navigation">
+        <a class="nav-link active" href="#dashboard">
+          <span class="nav-icon">▦</span><span>Dashboard</span>
+        </a>
+        <a class="nav-link" href="#products">
+          <span class="nav-icon">▣</span><span>Product Management</span>
+        </a>
+        <a class="nav-link" href="#stock-management">
+          <span class="nav-icon">◫</span><span>Stock Management</span>
+        </a>
+        <a class="nav-link" href="#incoming-shipments">
+          <span class="nav-icon">↓</span><span>Incoming Shipments</span>
+        </a>
+        <a class="nav-link" href="#outgoing-shipments">
+          <span class="nav-icon">↑</span><span>Outgoing Shipments</span>
+        </a>
+        <a class="nav-link" href="#warehouse-locations">
+          <span class="nav-icon">⌖</span><span>Warehouse Locations</span>
+        </a>
+        <a class="nav-link" href="#inventory-reports">
+          <span class="nav-icon">▤</span><span>Inventory Reports</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="storage-card">
+          <div class="storage-heading">
+            <span class="storage-icon">▤</span>
+            <span>Warehouse capacity</span>
+          </div>
+          <div class="storage-value">
+            <strong id="capacityPercent">76%</strong>
+            <span id="capacityNumbers">76,000 / 100,000</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="capacityProgress" style="width:76%"></div>
+          </div>
+          <p id="capacityAvailable">24% space available</p>
+        </div>
+
+        <a class="nav-link" href="#settings">
+          <span class="nav-icon">⚙</span><span>Settings</span>
+        </a>
+
+        <div class="profile-card profile">
+          <div class="avatar">SA</div>
+          <div class="profile-info">
+            <strong>Store Admin</strong>
+            <small>Administrator</small>
+          </div>
+          <button class="icon-button profile-menu" id="profileMenu"
+            type="button" aria-label="Profile options" title="Profile options">···</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+      <!-- TOP NAVBAR -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-button mobile-menu" id="menuToggle"
+            type="button" aria-label="Open navigation">☰</button>
+          <div class="breadcrumb">
+            <span>Workspace</span>
+            <span class="breadcrumb-divider">/</span>
+            <strong id="breadcrumbCurrent">Dashboard</strong>
+          </div>
+        </div>
+
+        <div class="topbar-actions top-actions">
+          <label class="global-search">
+            <span class="search-icon">⌕</span>
+            <input type="search" id="globalSearch"
+              placeholder="Search anything..." aria-label="Search dashboard">
+            <kbd>/</kbd>
+          </label>
+
+          <button class="icon-button theme-toggle" id="themeToggle"
+            type="button" title="Toggle dark mode" aria-label="Toggle dark mode">☾</button>
+
+          <button class="icon-button notification-button" id="notificationButton"
+            type="button" title="Notifications" aria-label="Show notifications">
+            ♧<span class="notification-dot"></span>
+          </button>
+
+          <div class="topbar-avatar" title="Store Admin">SA</div>
+        </div>
+      </header>
+
+      <div class="page-content">
+
+        <!-- ================= 1. DASHBOARD ================= -->
+        <section id="dashboard" class="module-section">
+          <section class="welcome-section">
+            <div>
+              <div class="eyebrow"><span class="live-dot"></span> WAREHOUSE OVERVIEW</div>
+              <h1>Good afternoon, Admin <span class="wave">✦</span></h1>
+              <p>Here's what's happening with your warehouse today.</p>
+            </div>
+            <div class="welcome-actions">
+              <span class="date-display" id="currentDate">Loading date...</span>
+              <button class="button button-primary" id="exportButton" type="button">
+                <span>↥</span> Export report
+              </button>
+            </div>
+          </section>
+
+          <section class="stats-grid" aria-label="Warehouse statistics">
+            <article class="stat-card">
+              <div class="stat-top">
+                <span class="stat-label">Total Products</span>
+                <span class="stat-icon purple-icon">▣</span>
+              </div>
+              <div class="stat-value" id="totalProducts">1,248</div>
+              <div class="stat-bottom">
+                <span class="trend positive">↗ 12.8%</span>
+                <span class="stat-note">vs. last month</span>
+              </div>
+              <div class="stat-sparkline spark-purple">
+                <svg viewBox="0 0 120 30" preserveAspectRatio="none" aria-hidden="true">
+                  <path d="M0 24 L15 19 L28 22 L42 12 L56 17 L72 8 L86 13 L101 4 L120 7"/>
+                </svg>
+              </div>
+            </article>
+
+            <article class="stat-card">
+              <div class="stat-top">
+                <span class="stat-label">Low Stock Items</span>
+                <span class="stat-icon orange-icon">⚠</span>
+              </div>
+              <div class="stat-value" id="lowStockCount">18</div>
+              <div class="stat-bottom">
+                <span class="trend negative">↗ 4 items</span>
+                <span class="stat-note">need attention</span>
+              </div>
+              <div class="stat-sparkline spark-orange">
+                <svg viewBox="0 0 120 30" preserveAspectRatio="none" aria-hidden="true">
+                  <path d="M0 6 L15 12 L29 8 L44 18 L58 13 L73 23 L88 16 L103 24 L120 20"/>
+                </svg>
+              </div>
+            </article>
+
+            <article class="stat-card">
+              <div class="stat-top">
+                <span class="stat-label">Active Shipments</span>
+                <span class="stat-icon blue-icon">⇄</span>
+              </div>
+              <div class="stat-value" id="shipmentCount">32</div>
+              <div class="stat-bottom">
+                <span class="trend positive">↗ 8.2%</span>
+                <span class="stat-note">vs. last month</span>
+              </div>
+              <div class="stat-sparkline spark-blue">
+                <svg viewBox="0 0 120 30" preserveAspectRatio="none" aria-hidden="true">
+                  <path d="M0 24 L14 18 L28 20 L42 11 L56 16 L70 7 L84 12 L102 5 L120 3"/>
+                </svg>
+              </div>
+            </article>
+
+            <article class="stat-card">
+              <div class="stat-top">
+                <span class="stat-label">Inventory Value</span>
+                <span class="stat-icon green-icon">₹</span>
+              </div>
+              <div class="stat-value" id="inventoryValue">₹24.8L</div>
+              <div class="stat-bottom">
+                <span class="trend positive">↗ 6.4%</span>
+                <span class="stat-note">vs. last month</span>
+              </div>
+              <div class="stat-sparkline spark-green">
+                <svg viewBox="0 0 120 30" preserveAspectRatio="none" aria-hidden="true">
+                  <path d="M0 25 L14 21 L29 23 L44 15 L59 18 L74 9 L89 13 L104 5 L120 2"/>
+                </svg>
+              </div>
+            </article>
+          </section>
+
+          <section class="charts-grid">
+            <article class="panel inventory-panel">
+              <div class="panel-header">
+                <div>
+                  <h2>Inventory Overview</h2>
+                  <p>Stock movement throughout the period</p>
+                </div>
+                <select class="select-control" id="chartPeriod" aria-label="Inventory chart period">
+                  <option value="7">Last 7 days</option>
+                  <option value="30">Last 30 days</option>
+                </select>
+              </div>
+
+              <div class="chart-legend">
+                <span><i class="legend-dot legend-purple"></i> Stock In</span>
+                <span><i class="legend-dot legend-lilac"></i> Stock Out</span>
+              </div>
+
+              <div class="inventory-chart" id="inventoryChart">
+                <svg id="movementChart" viewBox="0 0 640 250"
+                  preserveAspectRatio="none" role="img"
+                  aria-label="Stock in and stock out chart"></svg>
+                <div class="chart-tooltip" id="chartTooltip"></div>
+              </div>
+              <div class="chart-x-labels" id="chartLabels"></div>
+            </article>
+
+            <article class="panel distribution-panel">
+              <div class="panel-header">
+                <div>
+                  <h2>Stock Distribution</h2>
+                  <p>Current inventory status</p>
+                </div>
+                <button class="more-button" id="distributionInfo" type="button"
+                  aria-label="Distribution information" title="About stock distribution">···</button>
+              </div>
+
+              <div class="donut-area">
+                <div class="donut-chart" id="donutChart" role="img"
+                  aria-label="Stock distribution chart">
+                  <div class="donut-center">
+                    <strong id="distributionTotal">1,248</strong>
+                    <span>Total SKUs</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="distribution-legend">
+                <div class="distribution-row">
+                  <span class="distribution-name"><i class="legend-dot legend-green"></i> In Stock</span>
+                  <strong id="inStockCount">1,050 <small>84%</small></strong>
+                </div>
+                <div class="distribution-row">
+                  <span class="distribution-name"><i class="legend-dot legend-orange"></i> Low Stock</span>
+                  <strong id="distributionLow">18 <small>1.4%</small></strong>
+                </div>
+                <div class="distribution-row">
+                  <span class="distribution-name"><i class="legend-dot legend-red"></i> Out of Stock</span>
+                  <strong id="outStockCount">12 <small>1%</small></strong>
+                </div>
+                <div class="distribution-row">
+                  <span class="distribution-name"><i class="legend-dot legend-gray"></i> Other Stock</span>
+                  <strong id="otherStockCount">168 <small>13.5%</small></strong>
+                </div>
+              </div>
+            </article>
+          </section>
+
+          <section class="bottom-grid">
+            <article class="panel activity-panel">
+              <div class="panel-header">
+                <div>
+                  <h2>Recent Activity</h2>
+                  <p>Latest movements across your warehouse</p>
+                </div>
+                <a class="text-button" href="#inventory-reports">View all ↗</a>
+              </div>
+
+              <div class="table-wrap">
+                <table class="activity-table">
+                  <thead>
+                    <tr>
+                      <th>ACTIVITY</th>
+                      <th>REFERENCE</th>
+                      <th>QUANTITY</th>
+                      <th>STATUS</th>
+                      <th>TIME</th>
+                    </tr>
+                  </thead>
+                  <tbody id="activityTableBody"></tbody>
+                </table>
+                <div class="empty-state" id="emptySearch" hidden>
+                  <span>⌕</span>
+                  <strong>No matching activity found</strong>
+                  <p>Try another product, reference or status.</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="panel alerts-panel">
+              <div class="panel-header">
+                <div>
+                  <h2>Stock Alerts</h2>
+                  <p>Items that need your attention</p>
+                </div>
+                <span class="alert-count" id="alertCount">3 alerts</span>
+              </div>
+              <div class="alert-list" id="alertList"></div>
+              <a class="button button-light full-width" href="#stock-management">
+                View all stock alerts <span>→</span>
+              </a>
+            </article>
+          </section>
+        </section>
+
+        <!-- ================= 2. PRODUCT MANAGEMENT ================= -->
+        <section id="products" class="module-section">
+          <div class="welcome-section">
+            <div>
+              <div class="eyebrow">INVENTORY</div>
+              <h1>Product Management</h1>
+              <p>Add, edit and organize your warehouse products.</p>
+            </div>
+            <button class="button button-primary" id="openProductForm" type="button">
+              + Add Product
+            </button>
+          </div>
+
+          <div class="panel" id="productFormPanel" hidden>
+            <div class="panel-header">
+              <div>
+                <h2 id="productFormTitle">Add New Product</h2>
+                <p>Enter the product details below.</p>
+              </div>
+            </div>
+
+            <form id="productForm" class="stock-adjust-form">
+              <input type="hidden" id="productId">
+
+              <div class="form-field">
+                <label for="productSku">SKU</label>
+                <input id="productSku" required maxlength="50" placeholder="e.g. WH-1001">
+              </div>
+              <div class="form-field">
+                <label for="productName">Product Name</label>
+                <input id="productName" required maxlength="120" placeholder="Product name">
+              </div>
+              <div class="form-field">
+                <label for="productCategory">Category</label>
+                <input id="productCategory" required maxlength="80" placeholder="Electronics">
+              </div>
+              <div class="form-field">
+                <label for="productPrice">Unit Price (₹)</label>
+                <input id="productPrice" type="number" min="0" step="0.01" required>
+              </div>
+              <div class="form-field">
+                <label for="productQuantity">Opening Stock</label>
+                <input id="productQuantity" type="number" min="0" step="1" required>
+              </div>
+              <div class="form-field">
+                <label for="productThreshold">Low Stock Threshold</label>
+                <input id="productThreshold" type="number" min="0" step="1" value="10" required>
+              </div>
+
+              <button class="button button-primary" type="submit">Save Product</button>
+              <button class="secondary-btn" id="cancelProductForm" type="button">Cancel</button>
+            </form>
+            <p id="productMessage" class="stock-message" aria-live="polite"></p>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>All Products</h2>
+                <p>Manage product details and availability.</p>
+              </div>
+              <input id="productSearch" class="stock-search" type="search"
+                placeholder="Search name or SKU">
+            </div>
+
+            <div class="table-responsive">
+              <table class="stock-table">
+                <thead>
+                  <tr>
+                    <th>SKU</th><th>Product</th><th>Category</th>
+                    <th>Price</th><th>Stock</th><th>Status</th><th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="productsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 3. STOCK MANAGEMENT ================= -->
+        <section id="stock-management" class="module-section">
+          <div class="welcome-section">
+            <div>
+              <div class="eyebrow">INVENTORY CONTROL</div>
+              <h1>Stock Management</h1>
+              <p>Monitor stock levels and record inventory adjustments.</p>
+            </div>
+          </div>
+
+          <div class="stock-summary">
+            <article class="stock-summary-card">
+              <span>Total Products</span><h3 id="stockTotalProducts">0</h3>
+            </article>
+            <article class="stock-summary-card">
+              <span>Total Units</span><h3 id="stockTotalUnits">0</h3>
+            </article>
+            <article class="stock-summary-card">
+              <span>Low Stock Items</span><h3 id="stockLowItems">0</h3>
+            </article>
+          </div>
+
+          <div class="panel stock-adjust-panel">
+            <div class="panel-header">
+              <div>
+                <h2>Adjust Stock</h2>
+                <p>Record incoming or outgoing inventory.</p>
+              </div>
+            </div>
+
+            <form id="stockAdjustmentForm" class="stock-adjust-form">
+              <div class="form-field">
+                <label for="stockProduct">Product</label>
+                <select id="stockProduct" required>
+                  <option value="">Select a product</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label for="stockAction">Adjustment Type</label>
+                <select id="stockAction" required>
+                  <option value="in">Stock In (+)</option>
+                  <option value="out">Stock Out (-)</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label for="stockQuantity">Quantity</label>
+                <input id="stockQuantity" type="number" min="1" step="1"
+                  placeholder="Enter quantity" required>
+              </div>
+              <div class="form-field">
+                <label for="stockReason">Reason</label>
+                <select id="stockReason" required>
+                  <option value="Purchase received">Purchase received</option>
+                  <option value="Order dispatched">Order dispatched</option>
+                  <option value="Damaged goods">Damaged goods</option>
+                  <option value="Stock correction">Stock correction</option>
+                  <option value="Return received">Return received</option>
+                </select>
+              </div>
+              <button type="submit" class="button button-primary">Save Adjustment</button>
+            </form>
+            <p id="stockAdjustmentMessage" class="stock-message" aria-live="polite"></p>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>Current Stock Levels</h2>
+                <p>Search products and check stock status.</p>
+              </div>
+              <input id="stockSearch" class="stock-search" type="search"
+                placeholder="Search product or SKU">
+            </div>
+
+            <div class="table-responsive">
+              <table class="stock-table">
+                <thead>
+                  <tr>
+                    <th>Product</th><th>SKU</th><th>Category</th>
+                    <th>Quantity</th><th>Unit Price</th><th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="stockTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>Stock Movement History</h2>
+                <p>Recent stock adjustments.</p>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="stock-table">
+                <thead>
+                  <tr>
+                    <th>Date</th><th>Product</th><th>Type</th>
+                    <th>Quantity</th><th>Reason</th>
+                  </tr>
+                </thead>
+                <tbody id="stockHistoryBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 4. INCOMING SHIPMENTS ================= -->
+        <section id="incoming-shipments" class="module-section">
+          <div class="welcome-section">
+            <div>
+              <div class="eyebrow">PURCHASE ORDERS</div>
+              <h1>Incoming Shipments</h1>
+              <p>Create purchase orders and receive stock into your warehouse.</p>
+            </div>
+            <button class="button button-primary" id="openIncomingForm" type="button">
+              + New Purchase Order
+            </button>
+          </div>
+
+          <div class="stock-summary">
+            <article class="stock-summary-card">
+              <span>Total Orders</span><h3 id="incomingTotalOrders">0</h3>
+            </article>
+            <article class="stock-summary-card">
+              <span>Pending Orders</span><h3 id="incomingPendingOrders">0</h3>
+            </article>
+            <article class="stock-summary-card">
+              <span>Received Orders</span><h3 id="incomingReceivedOrders">0</h3>
+            </article>
+          </div>
+
+          <div class="panel" id="incomingFormPanel" hidden>
+            <div class="panel-header">
+              <div>
+                <h2>Create Purchase Order</h2>
+                <p>Add an order for products arriving at your warehouse.</p>
+              </div>
+            </div>
+            <form id="incomingOrderForm" class="stock-adjust-form">
+              <div class="form-field">
+                <label for="incomingProduct">Product</label>
+                <select id="incomingProduct" required>
+                  <option value="">Select product</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label for="incomingQuantity">Order Quantity</label>
+                <input id="incomingQuantity" type="number" min="1" step="1" required>
+              </div>
+              <div class="form-field">
+                <label for="incomingSupplier">Supplier Name</label>
+                <input id="incomingSupplier" type="text" maxlength="100" required>
+              </div>
+              <div class="form-field">
+                <label for="incomingExpectedDate">Expected Arrival</label>
+                <input id="incomingExpectedDate" type="date" required>
+              </div>
+              <button type="submit" class="button button-primary">Create Order</button>
+              <button type="button" class="secondary-btn" id="cancelIncomingForm">Cancel</button>
+            </form>
+            <p id="incomingMessage" class="stock-message" aria-live="polite"></p>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>Purchase Orders</h2>
+                <p>Track deliveries and receive products into stock.</p>
+              </div>
+              <input id="incomingSearch" class="stock-search" type="search"
+                placeholder="Search order or supplier">
+            </div>
+            <div class="table-responsive">
+              <table class="stock-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th><th>Product</th><th>Supplier</th>
+                    <th>Quantity</th><th>Expected Date</th><th>Status</th><th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="incomingOrdersBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 5. OUTGOING SHIPMENTS ================= -->
+        <section id="outgoing-shipments" class="module-section">
+          <div class="welcome-section">
+            <div>
+              <div class="eyebrow">SALES ORDERS</div>
+              <h1>Outgoing Shipments</h1>
+              <p>Prepare orders, pick products and record dispatched shipments.</p>
+            </div>
+            <button class="button button-primary" id="openOutgoingForm" type="button">
+              + New Sales Order
+            </button>
+          </div>
+
+          <div class="stock-summary">
+            <article class="stock-summary-card">
+              <span>Total Orders</span><h3 id="outgoingTotalOrders">0</h3>
+            </article>
+            <article class="stock-summary-card">
+              <span>Pending Orders</span><h3 id="outgoingPendingOrders">0</h3>
+            </article>
+            <article class="stock-summary-card">
+              <span>Shipped Orders</span><h3 id="outgoingShippedOrders">0</h3>
+            </article>
+          </div>
+
+          <div class="panel" id="outgoingFormPanel" hidden>
+            <div class="panel-header">
+              <div>
+                <h2>Create Sales Order</h2>
+                <p>Enter the order and customer details.</p>
+              </div>
+            </div>
+            <form id="outgoingOrderForm" class="stock-adjust-form">
+              <div class="form-field">
+                <label for="outgoingProduct">Product</label>
+                <select id="outgoingProduct" required>
+                  <option value="">Select product</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label for="outgoingQuantity">Quantity</label>
+                <input id="outgoingQuantity" type="number" min="1" step="1" required>
+              </div>
+              <div class="form-field">
+                <label for="outgoingCustomer">Customer Name</label>
+                <input id="outgoingCustomer" type="text" maxlength="100" required>
+              </div>
+              <div class="form-field">
+                <label for="outgoingShipDate">Planned Ship Date</label>
+                <input id="outgoingShipDate" type="date" required>
+              </div>
+              <button type="submit" class="button button-primary">Create Sales Order</button>
+              <button type="button" class="secondary-btn" id="cancelOutgoingForm">Cancel</button>
+            </form>
+            <p id="outgoingMessage" class="stock-message" aria-live="polite"></p>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>Sales Orders</h2>
+                <p>Pick, pack and ship outgoing products.</p>
+              </div>
+              <input id="outgoingSearch" class="stock-search" type="search"
+                placeholder="Search order or customer">
+            </div>
+            <div class="table-responsive">
+              <table class="stock-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th><th>Product</th><th>Customer</th>
+                    <th>Quantity</th><th>Ship Date</th><th>Status</th><th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="outgoingOrdersBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 6. WAREHOUSE LOCATIONS ================= -->
+        <section id="warehouse-locations" class="module-section">
+          <div class="welcome-section">
+            <div>
+              <div class="eyebrow">WAREHOUSE ORGANIZATION</div>
+              <h1>Warehouse Locations</h1>
+              <p>Organize inventory by zone, aisle, rack and bin.</p>
+            </div>
+            <button class="button button-primary" id="openLocationForm" type="button">
+              + Add Location
+            </button>
+          </div>
+
+          <div class="stock-summary">
+            <article class="stock-summary-card">
+              <span>Total Locations</span><h3 id="locationTotal">0</h3>
+            </article>
+            <article class="stock-summary-card">
+              <span>Occupied Locations</span><h3 id="locationOccupied">0</h3>
+            </article>
+            <article class="stock-summary-card">
+              <span>Available Capacity</span><h3 id="locationAvailable">0</h3>
+            </article>
+          </div>
+
+          <div class="panel" id="locationFormPanel" hidden>
+            <div class="panel-header">
+              <div>
+                <h2>Add Warehouse Location</h2>
+                <p>Create a zone, aisle, rack or bin location.</p>
+              </div>
+            </div>
+            <form id="locationForm" class="stock-adjust-form">
+              <input id="locationId" type="hidden">
+              <div class="form-field">
+                <label for="locationName">Location Name / Code</label>
+                <input id="locationName" required maxlength="60" placeholder="e.g. A-01-R02">
+              </div>
+              <div class="form-field">
+                <label for="locationZone">Zone</label>
+                <input id="locationZone" required maxlength="60" placeholder="e.g. Zone A">
+              </div>
+              <div class="form-field">
+                <label for="locationAisle">Aisle</label>
+                <input id="locationAisle" required maxlength="40" placeholder="e.g. Aisle 01">
+              </div>
+              <div class="form-field">
+                <label for="locationRack">Rack</label>
+                <input id="locationRack" required maxlength="40" placeholder="e.g. Rack 02">
+              </div>
+              <div class="form-field">
+                <label for="locationBin">Bin</label>
+                <input id="locationBin" required maxlength="40" placeholder="e.g. Bin 05">
+              </div>
+              <div class="form-field">
+                <label for="locationCapacity">Capacity (units)</label>
+                <input id="locationCapacity" type="number" min="1" step="1" required>
+              </div>
+              <div class="form-field">
+                <label for="locationOccupiedUnits">Occupied Units</label>
+                <input id="locationOccupiedUnits" type="number" min="0" step="1" value="0" required>
+              </div>
+              <button type="submit" class="button button-primary">Save Location</button>
+              <button type="button" class="secondary-btn" id="cancelLocationForm">Cancel</button>
+            </form>
+            <p id="locationMessage" class="stock-message" aria-live="polite"></p>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>All Locations</h2>
+                <p>Review location hierarchy and capacity.</p>
+              </div>
+              <input id="locationSearch" class="stock-search" type="search"
+                placeholder="Search location or zone">
+            </div>
+            <div class="table-responsive">
+              <table class="stock-table">
+                <thead>
+                  <tr>
+                    <th>Location</th><th>Zone</th><th>Aisle</th>
+                    <th>Rack</th><th>Bin</th><th>Capacity</th><th>Occupied</th><th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="locationsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 7. INVENTORY REPORTS ================= -->
+        <section id="inventory-reports" class="module-section">
+          <div class="welcome-section">
+            <div>
+              <div class="eyebrow">ANALYTICS & REPORTS</div>
+              <h1>Inventory Reports</h1>
+              <p>Review stock valuation, product quantities and stock movements.</p>
+            </div>
+          </div>
+
+          <div class="stock-summary">
+            <article class="stock-summary-card">
+              <span>Total Products</span><h3 id="reportProductCount">0</h3>
+            </article>
+            <article class="stock-summary-card">
+              <span>Total Stock Units</span><h3 id="reportStockUnits">0</h3>
+            </article>
+            <article class="stock-summary-card">
+              <span>Stock Valuation</span><h3 id="reportStockValue">₹0</h3>
+            </article>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>Export Reports</h2>
+                <p>Download a report for offline review.</p>
+              </div>
+            </div>
+            <div class="report-actions">
+              <button type="button" class="button button-primary" id="exportStockReport">
+                Export Stock CSV
+              </button>
+              <button type="button" class="button button-primary" id="exportMovementReport">
+                Export Movement CSV
+              </button>
+              <button type="button" class="button button-light" id="exportBackup">
+                Download Data Backup
+              </button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>Inventory Valuation</h2>
+                <p>Current quantity and estimated value by product.</p>
+              </div>
+              <input id="reportSearch" class="stock-search" type="search"
+                placeholder="Search report">
+            </div>
+            <div class="table-responsive">
+              <table class="stock-table">
+                <thead>
+                  <tr>
+                    <th>SKU</th><th>Product</th><th>Category</th>
+                    <th>Quantity</th><th>Unit Price</th><th>Total Value</th>
+                  </tr>
+                </thead>
+                <tbody id="valuationTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>Movement History</h2>
+                <p>Review inventory adjustments and transactions.</p>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="stock-table">
+                <thead>
+                  <tr>
+                    <th>Date</th><th>Product</th><th>Movement</th>
+                    <th>Quantity</th><th>Reference / Reason</th>
+                  </tr>
+                </thead>
+                <tbody id="reportMovementBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 8. SETTINGS ================= -->
+        <section id="settings" class="module-section">
+          <div class="welcome-section">
+            <div>
+              <div class="eyebrow">PREFERENCES</div>
+              <h1>Settings</h1>
+              <p>Manage your demo workspace preferences.</p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>Warehouse Information</h2>
+                <p>Basic workspace details.</p>
+              </div>
+            </div>
+            <form id="settingsForm" class="stock-adjust-form">
+              <div class="form-field">
+                <label for="warehouseName">Warehouse Name</label>
+                <input id="warehouseName" value="Main Warehouse" required>
+              </div>
+              <div class="form-field">
+                <label for="warehouseCapacity">Maximum Capacity (units)</label>
+                <input id="warehouseCapacity" type="number" min="1"
+                  value="100000" required>
+              </div>
+              <button class="button button-primary" type="submit">Save Settings</button>
+            </form>
+            <p id="settingsMessage" class="stock-message" aria-live="polite"></p>
+          </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+          <span>© <span id="currentYear"></span> WarehousePro. All rights reserved.</span>
+          <span><i class="live-dot"></i> Demo workspace</span>
+        </footer>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- MOBILE SIDEBAR OVERLAY -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- TOAST MESSAGES -->
+  <div class="toast-container" id="toastContainer"
+    aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Keep JavaScript at the end -->
+  <script src="script.js" defer></script>
+</body>
+</html>
